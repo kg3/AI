@@ -166,14 +166,14 @@ def pop():
     # Pupose: Remove Greatest number item from global Dictionary(pq)   
     tmp_cost = 0
     tmp_city = ''
-    max = 0
+    min = 0
     for i in pq.keys():
-        if int(i) >= max:
-            max = i
+        if int(i) <= min:
+            max = int(i)
     
-    tmp_cost = max
-    tmp_city = pq[max]
-    del pq[max]
+    tmp_cost = min
+    tmp_city = pq[min]
+    del pq[min]
 
     return tmp_cost, tmp_city
 
@@ -183,7 +183,7 @@ def ucs( graph, start, goal):
     # Purpose: GLOBAL PRIORITY QUEUE = pq = dictionary
     # uses hand coded priority queue
 
-    visited = set()
+    explored = set()
     put( 0,start  ) 
     count = 0
     
@@ -204,26 +204,27 @@ def ucs( graph, start, goal):
             return
         
         # add node.STATE to explored
-        visited.add(city)  
+        explored.add(city)  
 
         # for each action in problem.ACTIONS(node.STATE) do
-        for vertex in graph.keys():
-            for nodeVertex in graph[vertex].keys():
-                # nodeVertex FROM vertex is the ACTION
+        for child in graph[city].keys():
+            # child <- CHILD-NODE(problem, node, action)
+            # CHILD-NODE = graph[city]; problem = goal; action = vertex
+            
+            # NEED TO BE ABLE TO ITERATE THROUGH THE QUEUE
+            if (city not in explored ) | (city not in pq.items() ) :
 
-                # child <- CHILD-NODE(problem, node, action)
-                # CHILD-NODE = graph[vertex][nodeVertex]; problem = goal; action = nodeVertex
-                # NEED TO BE ABLE TO ITERATE THROUGH THE QUEUE
-                if (city not in visited) | (city not in pq.items() ) :
+                # frontier <- INSERT(child,frontier)
+                put( graph[vertex][nodeVertex], nodeVertex )
+                
+                if(DEBUG):
                     count += 1
                     print("VISITED[%s]: %s" % ( count,city ) )
-                    # frontier <- INSERT(child,frontier)
-                    put( graph[vertex][nodeVertex], nodeVertex )
                     Pprint(pq)
-
-                    # debug
-                    if count >= 30:
+                    if count >= BREAK:
                         exit()
+                
+                
                 # if child.STATE is in frontier with higher PATH-COST then
                 #   replace that frontier node with child
                 #if nodeVertex in pq.items():
@@ -338,18 +339,18 @@ if(DEBUG):
         
 
 # TRYING TO DO HAND MADE QUEUE
-#q = {}
-#ucs(find_dict, origin_city, destination_city )
+q = {}
+ucs(find_dict, origin_city, destination_city )
 
-#Pprint(pq)
+Pprint(pq)
 
 
 # USING PYTHON PRIORITY QUEUE
-q = Q.PriorityQueue()
-ucs_old( q, find_dict, origin_city, destination_city )
+#q = Q.PriorityQueue()
+#ucs_old( q, find_dict, origin_city, destination_city )
 
-if(DEBUG):
-    while not q.empty():
-        print q.get()
+#if(DEBUG):
+#    while not q.empty():
+#        print q.get()
            
 
