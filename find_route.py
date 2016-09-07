@@ -265,6 +265,8 @@ def ucs(graph, start, goal):
         
         # POP FROM THE QUEUE
         cost, city = pop()
+        if (DEBUG):
+            print("COST: %s CITY: %s " % (cost, city) )
  
         # RETURN SOLUTION
         if city == goal:
@@ -305,14 +307,11 @@ def ucs(graph, start, goal):
                             # delete/pop current pq[cost]
                             del pq[cost]
                             put( graph[city][child], child )
-
-
-                #if nodeVertex not in visited:
-                #    total_cost = cost + graph[vertex][nodeVertex]  
-                #     #print("%s : %s : %s" % (vertex, nodeVertex, total_cost) )
-                #    put( total_cost,nodeVertex )
         
-
+        if (DEBUG):
+            print("<EXPLORED>")
+            Pprint( explored)
+            print("</EXPLORED>")
     
     
 
