@@ -168,8 +168,11 @@ def pop():
     tmp_city = ''
     min = 0
     for i in pq.keys():
-        if int(i) <= min:
-            max = int(i)
+        if min == 0:
+            min = int(i)
+
+        elif int(i) <= min:
+            min = int(i)
     
     tmp_cost = min
     tmp_city = pq[min]
@@ -177,75 +180,6 @@ def pop():
 
     return tmp_cost, tmp_city
 
-def ucs( graph, start, goal):
-    #   Input: dictionary, origin, destination
-    #  Output: nothing
-    # Purpose: GLOBAL PRIORITY QUEUE = pq = dictionary
-    # uses hand coded priority queue
-
-    explored = set()
-    put( 0,start  ) 
-    count = 0
-    
-    # loop do
-    while 1:
-        # Empty frontier/priority queue
-        if not(bool(pq)):
-            print(" FAILED ")
-            return
-        if(DEBUG):
-            while not q.empty():
-                print q.get()
-        # POP FROM THE QUEUE
-        cost, city = pop()
- 
-        # RETURN SOLUTION
-        if city == goal:
-            return
-        
-        # add node.STATE to explored
-        explored.add(city)  
-
-        # for each action in problem.ACTIONS(node.STATE) do
-        for child in graph[city].keys():
-            # child <- CHILD-NODE(problem, node, action)
-            # CHILD-NODE = graph[city]; problem = goal; action = vertex
-            
-            # NEED TO BE ABLE TO ITERATE THROUGH THE QUEUE
-            if (city not in explored ) | (city not in pq.items() ) :
-
-                # frontier <- INSERT(child,frontier)
-                put( graph[vertex][nodeVertex], nodeVertex )
-                
-                if(DEBUG):
-                    count += 1
-                    print("VISITED[%s]: %s" % ( count,city ) )
-                    Pprint(pq)
-                    if count >= BREAK:
-                        exit()
-                
-                
-                # if child.STATE is in frontier with higher PATH-COST then
-                #   replace that frontier node with child
-                #if nodeVertex in pq.items():
-                for cost in pq.keys():
-                    if pq[cost] == nodeVertex:
-                        # compare cost from queue to child
-                        if cost >= graph[vertex][nodeVertex]:
-                            # replace one on priority queue with node
-                            # delete/pop current pq[cost]
-                            del pq[cost]
-                            pq.update( {graph[vertex][nodeVertex]: nodeVertex} )
-
-
-                #if nodeVertex not in visited:
-                #    total_cost = cost + graph[vertex][nodeVertex]  
-                #     #print("%s : %s : %s" % (vertex, nodeVertex, total_cost) )
-                #    put( total_cost,nodeVertex )
-        
-
-    
-    
 def ucs_old(q, graph, start, goal):
     #   Input: queue, dictionary, origination, destination
     #  Output: return exits loop
@@ -311,6 +245,76 @@ def ucs_old(q, graph, start, goal):
                     print("%s : %s : %s" % (vertex, nodeVertex, total_cost) )
                     q.put( (total_cost,nodeVertex) )
                     queue_check.update( {nodeVertex:total_cost} )
+
+def ucs(graph, start, goal):
+    #   Input: dictionary, origin, destination
+    #  Output: nothing
+    # Purpose: GLOBAL PRIORITY QUEUE = pq = dictionary
+    # uses hand coded priority queue
+
+    explored = set()
+    put( 0,start  ) 
+    count = 0
+    
+    # loop do
+    while 1:
+        # Empty frontier/priority queue
+        if not(bool(pq)):
+            print(" FAILED ")
+            return
+        
+        # POP FROM THE QUEUE
+        cost, city = pop()
+ 
+        # RETURN SOLUTION
+        if city == goal:
+            return
+        
+        # add node.STATE to explored
+        explored.add(city)  
+
+        # for each action in problem.ACTIONS(node.STATE) do
+        for child in graph[city].keys():
+            # child <- CHILD-NODE(problem, node, action)
+            # CHILD-NODE = graph[city]; problem = goal; action = vertex
+            
+            # NEED TO BE ABLE TO ITERATE THROUGH THE QUEUE
+            if (city not in explored ) | (city not in pq.items() ) :
+
+                # frontier <- INSERT(child,frontier)
+                put( graph[city][child], child )
+                
+                if(DEBUG):
+                    count += 1
+                    print("VISITED[%s]: %s" % ( count,city ) )
+                    Pprint(pq)
+                    if count >= BREAK:
+                        exit()
+                
+                
+                # if child.STATE is in frontier with higher PATH-COST then
+                #   replace that frontier node with child
+                #if nodeVertex in pq.items():
+                for cost in pq.keys():
+                    if pq[cost] == child:           # we want this specific child
+                        #if (DEBUG):
+                        #    print(" FOUND CHILD ")
+                        # compare cost from queue to child
+                        if cost >= graph[city][child]:
+                            # replace one on priority queue with node
+                            # delete/pop current pq[cost]
+                            del pq[cost]
+                            put( graph[city][child], child )
+
+
+                #if nodeVertex not in visited:
+                #    total_cost = cost + graph[vertex][nodeVertex]  
+                #     #print("%s : %s : %s" % (vertex, nodeVertex, total_cost) )
+                #    put( total_cost,nodeVertex )
+        
+
+    
+    
 
 ### MAIN ###
 
