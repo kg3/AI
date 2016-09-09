@@ -143,7 +143,6 @@ def search(graph, start, end):
 #GLOBALS#
 DEBUG=False
 BREAK=False
-Infinity = 1000000
 
 # check input
 usage()
@@ -152,6 +151,9 @@ usage()
 find_dict = parse( readfile( argv[1] ) )
 # process input for desitination and origin cities
 origin_city, destination_city = process_input()
+
+Infinity = 500000
+
 
 if(DEBUG):
     Pprint(find_dict)
