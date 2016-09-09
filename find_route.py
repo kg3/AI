@@ -1,12 +1,15 @@
 #!/usr/bin/python
 
 import pprint               # for development
-from sys import argv,exit   # for handling system arguments
-try:
-    import Queue as Q  # ver. < 3.0
-except ImportError:
-    import queue as Q
-    
+from sys import argv,exit,path   # for handling system arguments
+#try:
+#    import Queue as Q  # ver. < 3.0
+#except ImportError:
+#    import queue as Q
+import os
+path.append(os.getcwd())
+import Queue3 as Q
+
 ### FUNCTIONS ###
 
 def Pprint( datatoprint ) :
@@ -109,7 +112,6 @@ def search(graph, start, end):
             print("distance: %s km" %  str(node[0]) )
             print("route:") 
             
-
             for _start in range( 0 , len( node[1]) - 1 ):
                 # print the results from the node[1] array
                 if _start == 0:
