@@ -2,13 +2,12 @@
 
 import pprint               # for development
 from sys import argv,exit,path   # for handling system arguments
-#try:
-#    import Queue as Q  # ver. < 3.0
-#except ImportError:
-#    import queue as Q
 import os
 path.append(os.getcwd())
-import Queue3 as Q
+try:
+    import Queue3 as Q
+except:
+    import Queue as Q 
 
 ### FUNCTIONS ###
 
