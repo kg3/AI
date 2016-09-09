@@ -160,7 +160,6 @@ search (find_dict, origin_city, destination_city )
 if(BREAK):
     # loop lots of options
     Pprint(find_dict)
-    #keys = sorted(find_dict, key=lambda key: find_dict[key])
     keys = sorted( find_dict.iterkeys() )
     for i in keys:
         for j in keys:   
