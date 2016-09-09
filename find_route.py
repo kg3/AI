@@ -6,23 +6,7 @@ try:
     import Queue as Q  # ver. < 3.0
 except ImportError:
     import queue as Q
-import heapq            # handwritten queue
-
-### Classes ###
-
-class PriorityQueue:
-    def __init__(self):
-        self._queue = []
-        self._index = 0
     
-    def push(self, item, priority):
-        heapq.heappush(self._queue, (-priority, self._index,item) )
-        self._index += 1
-
-    def pop(self):
-        return heapq.heappop(self._queue)[-1]
-
-
 ### FUNCTIONS ###
 
 def Pprint( datatoprint ) :
@@ -102,50 +86,6 @@ def parse(data):
                 
     return dictionary
 
-def call_city( start, destination,cost ):
-    #   Input: start location, destination, cost
-    #  Output: recursively calling itself
-    # Purpose: UCS algorithm on dictionary; keys are vertices
-    
-    # https://en.wikipedia.org/wiki/Priority_queue
-    # https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
-    # https://docs.python.org/3/library/queue.html#Queue.PriorityQueue
-    # https://www.google.com/#q=priority+queue+python
-
-    visited = set()
-    q = Q.PriorityQueue()
-    q.put( (start, 0) )
-    
-    tmp_array = find_dict[ start ]
-    # loop through each node city and create a path
-    
-    c = 1   # cost
-    i = 0   # name
-    while i < len( tmp_array ):
-        
-        path_array = find_dict[ tmp_array[i] ]
-        
-        # RECURSION CALL
-        if tmp_array[i] != destination :
-            if(DEBUG):
-                print "Vertex: %s city: %s cost: %i " % (start, tmp_array[i], cost + tmp_array[c])
-            
-            # CATCH A PROBLEM
-            if ( (cost + tmp_array[c]) >= 1000):
-                exit(0)
-            
-            i+=2
-            # put in array to save all other calls and iterations
-            call_city( tmp_array[i],destination, cost + tmp_array[c] )
-        
-        # if index is at size length and not found escape node
-        if ( i >= len(tmp_array) ) & ( tmp_array[i] != destination ):
-            # break out of the loop
-            i = len(tmp_array) * 2
-        
-        i += 2
-        c += 2
-
 def findavalue(dictionary):
     #   Input: a dictionary
     #  Output: nothing 
@@ -154,172 +94,81 @@ def findavalue(dictionary):
         for secondkey in dictionary[key].keys():
             print("COST FROM %s TO %s is: %s" % (key,secondkey,dictionary[key][secondkey] ) )
 
-def put(priority,item):
-    #   Input: city-name (item) cost (priority)
+def search(graph, start, end):
     #
-    # Purpose: update global dictionary
-    pq.update( { priority:item } )
+    #
+    #
 
-def pop():
-    #   Input: nothing
-    #  Output: pop'd values
-    # Pupose: Remove Greatest number item from global Dictionary(pq)   
-    tmp_cost = 0
-    tmp_city = ''
-    min = 0
-    for i in pq.keys():
-        if min == 0:
-            min = int(i)
+    queue = Q.PriorityQueue()
+    _queue_check = {}
+    queue.put( (0, [start]) )
+    _queue_check.update( { start : 0 } )
 
-        elif int(i) <= min:
-            min = int(i)
-    
-    tmp_cost = min
-    tmp_city = pq[min]
-    del pq[min]
+    while not queue.empty():
+        node = queue.get()
+        del _queue_check[start]
 
-    return tmp_cost, tmp_city
-
-def ucs_old(q, graph, start, goal):
-    #   Input: queue, dictionary, origination, destination
-    #  Output: return exits loop
-    # Purpose: Uniform Count Search
-    visited = set()
-    q.put( (0,start) ) 
-    # for everything in the queue through into a 'queue' dict to iterate through and see what's
-    # in there at any given point. Python Queue is for Threads and not iteritable.
-    queue_check = { start:0 }     # only need to check for vertices
-    
-
-    # SUCCESSOR FUNCTION
-
-
-    # count is for #DEBUG
-    count = 0
-    
-    # loop do
-    while q:
-        # Empty frontier/priority queue
-        if q.empty():
-            print(" FAILED ")
-            return
-
-        # DEBUG
-        if (DEBUG):
-            print("Queue:")
-            Pprint(queue_check)
-
-        # POP FROM THE QUEUE       
-        cost, city = q.get()
-        # remove also from iterable queue
-        del queue_check[city]
+        current = node[1][len(node[1]) - 1]
         
-        # add node.STATE to explored
-        #if city not in visited:
-        visited.add(city)  
 
-            # RETURN SOLUTION
-        if city == goal:
-            return
-
-        # for each action in problem.ACTIONS(node.STATE) do
-        for vertex in graph.keys():
-            for nodeVertex in graph[vertex].keys():
-                # nodeVertex FROM vertex is the ACTION
-
-                # child <- CHILD-NODE(problem, node, action)
-                # CHILD-NODE = graph[vertex][nodeVertex]; problem = goal; action = nodeVertex
-                # NEED TO BE ABLE TO ITERATE THROUGH THE QUEUE
-                #if (city not in visited) | ( city not in queue_check.keys() ) :  # | (city not in q):
-                #    count += 1
-                #    print("VISITED[%s]: %s" %  ( count,nodeVertex ) )
-                #    q.put( (cost, nodeVertex ) )
-                #    queue_check.update( {nodeVertex:count} )
-
-                #    if(DEBUG):
-                #        if count >= BREAK:
-                #            return
-
-                if nodeVertex not in visited:
-                    total_cost = cost + graph[vertex][nodeVertex]  
-                    print("%s : %s : %s" % (vertex, nodeVertex, total_cost) )
-                    q.put( (total_cost,nodeVertex) )
-                    queue_check.update( {nodeVertex:total_cost} )
-
-def ucs(graph, start, goal):
-    #   Input: dictionary, origin, destination
-    #  Output: nothing
-    # Purpose: GLOBAL PRIORITY QUEUE = pq = dictionary
-    # uses hand coded priority queue
-
-    explored = set()
-    put( 0,start  ) 
-    count = 0
-    
-    # loop do
-    while 1:
-        # Empty frontier/priority queue
-        if not(bool(pq)):
-            print(" FAILED ")
-            return
-        
-        # POP FROM THE QUEUE
-        cost, city = pop()
-        if (DEBUG):
-            print("COST: %s CITY: %s " % (cost, city) )
- 
-        # RETURN SOLUTION
-        if city == goal:
-            return
-        
-        # add node.STATE to explored
-        explored.add(city)  
-
-        # for each action in problem.ACTIONS(node.STATE) do
-        for child in graph[city].keys():
-            # child <- CHILD-NODE(problem, node, action)
-            # CHILD-NODE = graph[city]; problem = goal; action = vertex
+        # found solution
+        if end in node[1]:
+            if(DEBUG):
+                print("Path found: " + str(node[1]) + ", Cost = " + str(node[0]))
             
-            # NEED TO BE ABLE TO ITERATE THROUGH THE QUEUE
-            if (city not in explored ) | (city not in pq.items() ) :
+            print("distance: %s km" %  str(node[0]) )
+            print("route:") 
+            
 
-                # frontier <- INSERT(child,frontier)
-                put( graph[city][child], child )
-                
-                if(DEBUG):
+            for _start in range( 0 , len( node[1]) - 1 ):
+                '''
+                Bremen to Dortmund, 234 km 
+                Dortmund to Frankfurt, 221 km 
+                '''
+                if _start == 0:
+                    _cost = graph[ node[1][0] ][ node[1][ _start + 1 ]   ]
+                    print("%s to %s, %s km " % ( node[1][0], node[1][ _start + 1 ], _cost ) )
+                else:
+                    _cost = graph[ node[1][_start] ][ node[1][ _start + 1 ] ]
+                    print("%s to %s, %s km " % ( node[1][_start], node[1][ _start + 1 ], _cost ) )                    
+            break
+
+        cost = node[0]
+        for neighbor in graph[current]:
+            temp = node[1][:]
+            temp.append(neighbor)
+            total = cost + graph[current][neighbor] 
+            queue.put( (total, temp) )
+            
+            for _city in temp:
+                _queue_check.update( { _city : total } )
+            
+            #Pprint([temp,total])
+            #if( total >= BREAK):
+            #    return
+            count = 0
+            for _check in temp:
+                if _check == temp[0]:
                     count += 1
-                    print("VISITED[%s]: %s" % ( count,city ) )
-                    Pprint(pq)
-                    if count >= BREAK:
-                        exit()
-                
-                
-                # if child.STATE is in frontier with higher PATH-COST then
-                #   replace that frontier node with child
-                #if nodeVertex in pq.items():
-                for cost in pq.keys():
-                    if pq[cost] == child:           # we want this specific child
-                        #if (DEBUG):
-                        #    print(" FOUND CHILD ")
-                        # compare cost from queue to child
-                        if cost >= graph[city][child]:
-                            # replace one on priority queue with node
-                            # delete/pop current pq[cost]
-                            del pq[cost]
-                            put( graph[city][child], child )
-        
-        if (DEBUG):
-            print("<EXPLORED>")
-            Pprint( explored)
-            print("</EXPLORED>")
-    
+
+            if count >= Infinity:
+                print("distance: infinity")
+                print("route:" )
+                print("none")
+                return
+                while not queue.empty():
+                    queue.get()
+
+
+
+
     
 
 ### MAIN ###
 
 #GLOBALS#
-DEBUG=True
-BREAK=21
+DEBUG=False
+BREAK=False
 pq = {}
 
 # check input
@@ -333,27 +182,19 @@ origin_city, destination_city = process_input()
 if(DEBUG):
     Pprint(find_dict)
 
-#findavalue(find_dict)
-#print "all vertexes = %s " % find_dict.keys()
+Infinity = 6      #len(find_dict) / 3
 
-# Uniform Cost Selection Algorithm
-# for vertex in find_dict.keys(): 
-#call_city( origin_city, destination_city , 0 )
-        
+search (find_dict, origin_city, destination_city )
 
-# TRYING TO DO HAND MADE QUEUE
-q = {}
-ucs(find_dict, origin_city, destination_city )
-
-Pprint(pq)
-
-
-# USING PYTHON PRIORITY QUEUE
-#q = Q.PriorityQueue()
-#ucs_old( q, find_dict, origin_city, destination_city )
-
-#if(DEBUG):
-#    while not q.empty():
-#        print q.get()
-           
+if(BREAK):
+    Pprint(find_dict)
+    for i in find_dict.keys():
+        for j in find_dict[i].keys():
+            print("-----")
+            for k in find_dict.keys():
+                for n in find_dict[k].keys():
+                    if( (j != n) | (k != i) ):
+                        print(" FROM %s TO %s " % (j, n) )
+                        search( find_dict, j, n )
+                        print("-----")
 
