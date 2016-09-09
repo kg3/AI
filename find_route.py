@@ -100,13 +100,14 @@ def search(graph, start, end):
     #
 
     queue = Q.PriorityQueue()
-    _queue_check = {}
+    # _queue_check = {}
     queue.put( (0, [start]) )
-    _queue_check.update( { start : 0 } )
-
+    # _queue_check.update( { start : 0 } )
+    
+    loop = 0
     while not queue.empty():
         node = queue.get()
-        del _queue_check[start]
+        #del _queue_check[start]
 
         current = node[1][len(node[1]) - 1]
         
@@ -140,26 +141,35 @@ def search(graph, start, end):
             total = cost + graph[current][neighbor] 
             queue.put( (total, temp) )
             
-            for _city in temp:
-                _queue_check.update( { _city : total } )
+            loop += 1
+            if loop >= Infinity:
+                print("distance: infinity")
+                print("route:" )
+                print("none")
+
+                return
+            
+            #for _city in temp:
+            #    _queue_check.update( { _city : total } )
             
             #Pprint([temp,total])
             #if( total >= BREAK):
             #    return
-            count = 0
-            for _check in temp:
-                if _check == temp[0]:
-                    count += 1
+            # count = 0
+            #for _check in temp:
+            #    if _check == temp[0]:
+            #        count += 1
 
-            if count >= Infinity:
-                print("distance: infinity")
-                print("route:" )
-                print("none")
-                return
-                while not queue.empty():
-                    queue.get()
+            #if count >= Infinity:
+            #    print("distance: infinity")
+            #    print("route:" )
+            #    print("none")
+            #    return
+            #    while not queue.empty():
+            #        queue.get()
 
 
+       
 
 
     
@@ -169,6 +179,7 @@ def search(graph, start, end):
 #GLOBALS#
 DEBUG=False
 BREAK=False
+Infinity = 1000000
 pq = {}
 
 # check input
@@ -181,8 +192,6 @@ origin_city, destination_city = process_input()
 
 if(DEBUG):
     Pprint(find_dict)
-
-Infinity = 6      #len(find_dict) / 3
 
 search (find_dict, origin_city, destination_city )
 
