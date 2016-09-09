@@ -86,46 +86,32 @@ def parse(data):
                 
     return dictionary
 
-def findavalue(dictionary):
-    #   Input: a dictionary
-    #  Output: nothing 
-    # Purpose: debug code to find exact way to iterate vertices in nested dictionary
-    for key in dictionary.keys():
-        for secondkey in dictionary[key].keys():
-            print("COST FROM %s TO %s is: %s" % (key,secondkey,dictionary[key][secondkey] ) )
-
 def search(graph, start, end):
-    #
-    #
-    #
+    #   Input: Dictionary
+    #  Output: nothing
+    # Purpose: Uniform Cost Search, implemented using python's priority queue
 
     queue = Q.PriorityQueue()
-    # _queue_check = {}
     queue.put( (0, [start]) )
-    # _queue_check.update( { start : 0 } )
     
     loop = 0
     while not queue.empty():
         node = queue.get()
-        #del _queue_check[start]
 
         current = node[1][len(node[1]) - 1]
         
-
         # found solution
         if end in node[1]:
+
             if(DEBUG):
                 print("Path found: " + str(node[1]) + ", Cost = " + str(node[0]))
-            
+
             print("distance: %s km" %  str(node[0]) )
             print("route:") 
             
 
             for _start in range( 0 , len( node[1]) - 1 ):
-                '''
-                Bremen to Dortmund, 234 km 
-                Dortmund to Frankfurt, 221 km 
-                '''
+                # print the results from the node[1] array
                 if _start == 0:
                     _cost = graph[ node[1][0] ][ node[1][ _start + 1 ]   ]
                     print("%s to %s, %s km " % ( node[1][0], node[1][ _start + 1 ], _cost ) )
@@ -143,44 +129,20 @@ def search(graph, start, end):
             
             loop += 1
             if loop >= Infinity:
+                # this loop has iterated to a path size of well over one million
                 print("distance: infinity")
                 print("route:" )
                 print("none")
 
                 return
-            
-            #for _city in temp:
-            #    _queue_check.update( { _city : total } )
-            
-            #Pprint([temp,total])
-            #if( total >= BREAK):
-            #    return
-            # count = 0
-            #for _check in temp:
-            #    if _check == temp[0]:
-            #        count += 1
-
-            #if count >= Infinity:
-            #    print("distance: infinity")
-            #    print("route:" )
-            #    print("none")
-            #    return
-            #    while not queue.empty():
-            #        queue.get()
-
-
-       
-
-
     
 
 ### MAIN ###
 
 #GLOBALS#
 DEBUG=False
-BREAK=False
+BREAK=True
 Infinity = 1000000
-pq = {}
 
 # check input
 usage()
@@ -196,14 +158,15 @@ if(DEBUG):
 search (find_dict, origin_city, destination_city )
 
 if(BREAK):
+    # loop lots of options
     Pprint(find_dict)
-    for i in find_dict.keys():
-        for j in find_dict[i].keys():
-            print("-----")
-            for k in find_dict.keys():
-                for n in find_dict[k].keys():
-                    if( (j != n) | (k != i) ):
-                        print(" FROM %s TO %s " % (j, n) )
-                        search( find_dict, j, n )
-                        print("-----")
+    #keys = sorted(find_dict, key=lambda key: find_dict[key])
+    keys = sorted( find_dict.iterkeys() )
+    for i in keys:
+        for j in keys:   
+            if( i != j ):
+                print("-----")
+                print(" FROM %s TO %s " % (i, j) )
+                search( find_dict, i, j )
+                print("-----")
 
