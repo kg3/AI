@@ -141,7 +141,7 @@ def search(graph, start, end):
 
 #GLOBALS#
 DEBUG=False
-BREAK=True
+BREAK=False
 Infinity = 1000000
 
 # check input
